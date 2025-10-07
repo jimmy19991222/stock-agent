@@ -18,15 +18,18 @@ torch.manual_seed(42)
 np.random.seed(42)
 random.seed(42)
 
-# 明确设置使用CUDA设备
-torch.cuda.manual_seed(42)
-torch.cuda.manual_seed_all(42)
-# 确保CUDA可用时使用GPU
+# 确保CUDA可用时使用GPU，否则使用CPU
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 logger.info(f"使用设备: {DEVICE}")
+
+# 只有在CUDA可用时才设置CUDA种子
 if torch.cuda.is_available():
+    torch.cuda.manual_seed(42)
+    torch.cuda.manual_seed_all(42)
     logger.info(f"CUDA设备名称: {torch.cuda.get_device_name(0)}")
     logger.info(f"CUDA设备数量: {torch.cuda.device_count()}")
+else:
+    logger.info("CUDA不可用，使用CPU进行计算")
 
 
 class StockTradingEnv(gym.Env):
@@ -889,7 +892,7 @@ class RLTradingAgent:
         Args:
             model_dir: 模型保存目录
         """
-        self.rl_trader = RLTrader(model_dir=model_dir, device='cuda')  # 明确指定使用cuda
+        self.rl_trader = RLTrader(model_dir=model_dir, device=DEVICE)  # 使用全局设备配置
         self.window_size = 20  # 观察窗口大小
         self.logger = setup_logger('rl_trading_agent')
         self.is_trained = False
@@ -956,7 +959,7 @@ class RLTradingAgent:
             state_dim=state_dim,
             action_dim=action_dim,
             hidden_dim=self.rl_trader.hidden_dim,
-            device='cuda'  # 明确指定使用cuda
+            device=DEVICE  # 使用全局设备配置
         )
         
         # 加载模型

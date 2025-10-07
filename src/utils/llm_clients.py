@@ -4,7 +4,9 @@ import backoff
 from abc import ABC, abstractmethod
 from openai import OpenAI
 from src.utils.logging_config import setup_logger, SUCCESS_ICON, ERROR_ICON, WAIT_ICON
+from dotenv import load_dotenv
 
+load_dotenv()
 # 设置日志记录
 logger = setup_logger('llm_clients')
 
@@ -25,6 +27,14 @@ class OpenAIClient(LLMClient):
         self.api_key = api_key or os.getenv("OPENAI_COMPATIBLE_API_KEY")
         self.base_url = base_url or os.getenv("OPENAI_COMPATIBLE_BASE_URL")
         self.model = model or os.getenv("OPENAI_COMPATIBLE_MODEL")
+
+        # self.api_key = '15O3IPILSH'
+        # self.base_url = 'https://whale-wave.alibaba-inc.com/api/v2/services/aigc/text-generation'
+        # self.model ='DeepSeek-V3.2-Exp'
+
+        # self.api_key = 'sk-93bf8a433943448bad6611ca5532a113'
+        # self.base_url = 'https://dashscope.aliyuncs.com/compatible-mode/v1/'
+        # self.model ='qwen3-max'
 
         if not self.api_key:
             logger.error(f"{ERROR_ICON} 未找到 OPENAI_COMPATIBLE_API_KEY 环境变量")

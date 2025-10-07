@@ -37,6 +37,7 @@ from src.utils.llm_interaction_logger import (
 from src.utils.api_utils import app as fastapi_app
 from src.utils.json_unicode_handler import monkey_patch_all_agents, patch_json_dumps
 
+
 patch_json_dumps()  # 修改默认json.dumps行为
 monkey_patch_all_agents()  # 修补所有代理类
 
@@ -55,9 +56,11 @@ try:
 except ImportError:
     HAS_STRUCTURED_OUTPUT = False
 
+logger = logging.getLogger(__name__)
+
 # Initialize logging system
 # 设置全局日志配置：控制台只显示WARNING及以上，文件记录所有级别
-setup_global_logging(console_level=logging.WARNING, file_level=logging.DEBUG)
+setup_global_logging(console_level=logging.INFO, file_level=logging.DEBUG)
 
 # Use simple console logger that doesn't create additional files
 sys.stdout = SimpleConsoleLogger()
@@ -264,7 +267,7 @@ if __name__ == "__main__":
                         help='Initial stock position (default: 0)')
     parser.add_argument('--summary', action='store_true',
                         help='Show beautiful summary report at the end')
-    parser.add_argument('--log-level', type=str, default='WARNING',
+    parser.add_argument('--log-level', type=str, default='DEBUG',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Console log level (default: WARNING)')
     parser.add_argument('--verbose', '-v', action='store_true',
@@ -313,8 +316,8 @@ if __name__ == "__main__":
     
     # 如果启用了show_reasoning，自动设置日志级别为INFO以显示推理过程
     if args.show_reasoning:
-        set_console_level(logging.INFO)
-        print("已启用推理显示模式，日志级别已调整为INFO")
+        set_console_level(logging.DEBUG)
+        print("已启用推理显示模式，日志级别已调整为DEBUG")
     
     result = run_hedge_fund(
         run_id=main_run_id,
@@ -327,8 +330,8 @@ if __name__ == "__main__":
         show_summary=args.summary,
         tickers=args.tickers  # 传入多个股票代码
     )
-    print("\nFinal Result:")
-    print(result)
+    logger.info("\nFinal Result:")
+    logger.info(result)
 
 # --- Historical Data Function ---
 def get_historical_data(symbol: str) -> pd.DataFrame:

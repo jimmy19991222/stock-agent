@@ -1,13 +1,17 @@
 import pandas as pd
 from typing import Dict, Any, List
+import time
+import random
 
 from src.utils.logging_config import setup_logger
 
 logger = setup_logger('akshare_adapter')
 
+max_retries = 100
+
 def get_akshare_price_data(akshare_code: str, start_date: str, end_date: str, adjust: str) -> pd.DataFrame:
     """从AKShare获取价格数据"""
-    try:
+    def fetch_data():
         import akshare as ak
         logger.info(f"Fetching price history using AKShare for {akshare_code}")
         df = ak.stock_zh_a_hist(
@@ -43,13 +47,25 @@ def get_akshare_price_data(akshare_code: str, start_date: str, end_date: str, ad
             logger.info(f"Successfully retrieved data from AKShare: {len(df)} records")
             return df
         return pd.DataFrame()
-    except (ImportError, Exception) as e:
-        logger.warning(f"AKShare error: {str(e)}")
-        return pd.DataFrame()
+    
+    for attempt in range(max_retries):
+        try:
+            import akshare as ak
+            return fetch_data()
+        except ImportError:
+            logger.warning("AKShare not installed, returning empty DataFrame")
+            return pd.DataFrame()
+        except Exception as e:
+            logger.warning(f"Attempt {attempt + 1} failed for get_akshare_price_data: {str(e)}")
+            if attempt < max_retries - 1:
+                time.sleep(random.uniform(1, 3))  # 随机延时1-3秒后重试
+            else:
+                logger.error(f"All attempts failed for get_akshare_price_data: {str(e)}")
+                return pd.DataFrame()
 
 def get_akshare_financial_metrics(akshare_code: str, exchange_prefix: str) -> List[Dict[str, Any]]:
     """从AKShare获取财务指标"""
-    try:
+    def fetch_data():
         import akshare as ak
         logger.info(f"Fetching financial metrics using AKShare for {akshare_code}")
         
@@ -80,13 +96,25 @@ def get_akshare_financial_metrics(akshare_code: str, exchange_prefix: str) -> Li
                 
                 return [agent_metrics]
         return [{}]
-    except (ImportError, Exception) as e:
-        logger.warning(f"AKShare financial metrics error: {str(e)}")
-        return [{}]
+    
+    for attempt in range(max_retries):
+        try:
+            import akshare as ak
+            return fetch_data()
+        except ImportError:
+            logger.warning("AKShare not installed, returning empty list")
+            return [{}]
+        except Exception as e:
+            logger.warning(f"Attempt {attempt + 1} failed for get_akshare_financial_metrics: {str(e)}")
+            if attempt < max_retries - 1:
+                time.sleep(random.uniform(1, 3))
+            else:
+                logger.error(f"All attempts failed for get_akshare_financial_metrics: {str(e)}")
+                return [{}]
 
 def get_akshare_financial_statements(akshare_code: str, exchange_prefix: str) -> List[Dict[str, Any]]:
     """从AKShare获取财务报表数据"""
-    try:
+    def fetch_data():
         import akshare as ak
         logger.info(f"Fetching financial statements using AKShare for {akshare_code}")
         
@@ -114,13 +142,25 @@ def get_akshare_financial_statements(akshare_code: str, exchange_prefix: str) ->
         }
         
         return [current_item, previous_item]
-    except (ImportError, Exception) as e:
-        logger.warning(f"AKShare financial statements error: {str(e)}")
-        return [{}, {}]
+    
+    for attempt in range(max_retries):
+        try:
+            import akshare as ak
+            return fetch_data()
+        except ImportError:
+            logger.warning("AKShare not installed, returning empty list")
+            return [{}, {}]
+        except Exception as e:
+            logger.warning(f"Attempt {attempt + 1} failed for get_akshare_financial_statements: {str(e)}")
+            if attempt < max_retries - 1:
+                time.sleep(random.uniform(1, 3))
+            else:
+                logger.error(f"All attempts failed for get_akshare_financial_statements: {str(e)}")
+                return [{}, {}]
 
 def get_akshare_market_data(akshare_code: str) -> Dict[str, Any]:
     """从AKShare获取市场数据"""
-    try:
+    def fetch_data():
         import akshare as ak
         logger.info(f"Fetching market data using AKShare for {akshare_code}")
         
@@ -146,6 +186,18 @@ def get_akshare_market_data(akshare_code: str) -> Dict[str, Any]:
                 "fifty_two_week_low": float(week_low)
             }
         return {}
-    except (ImportError, Exception) as e:
-        logger.warning(f"AKShare market data error: {str(e)}")
-        return {}
+    
+    for attempt in range(max_retries):
+        try:
+            import akshare as ak
+            return fetch_data()
+        except ImportError:
+            logger.warning("AKShare not installed, returning empty dict")
+            return {}
+        except Exception as e:
+            logger.warning(f"Attempt {attempt + 1} failed for get_akshare_market_data: {str(e)}")
+            if attempt < max_retries - 1:
+                time.sleep(random.uniform(1, 3))
+            else:
+                logger.error(f"All attempts failed for get_akshare_market_data: {str(e)}")
+                return {}

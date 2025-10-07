@@ -426,6 +426,7 @@ class StructuredTerminalOutput:
         
         # 直接使用print输出，不受日志级别限制
         print("\n" + colored_output)
+        logger.info("\n" + colored_output)
 
 
 # 创建全局实例

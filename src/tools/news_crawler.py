@@ -52,18 +52,17 @@ def get_stock_news(symbol: str, max_news: int = 10) -> list:
 
     # 检查是否需要更新新闻
     need_update = True
+    # 替换原来的缓存检查部分
     if os.path.exists(news_file):
         try:
             with open(news_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 if data.get("date") == today:
                     cached_news = data.get("news", [])
-                    if len(cached_news) >= max_news:
-                        print(f"使用缓存的新闻数据: {news_file}")
+                    if cached_news:
+                        # 即使数量不足 max_news，也优先返回已有新闻（避免空）
+                        print(f"使用缓存的 {len(cached_news)} 条新闻（请求 {max_news} 条）")
                         return cached_news[:max_news]
-                    else:
-                        print(
-                            f"缓存的新闻数量({len(cached_news)})不足，需要获取更多新闻({max_news}条)")
         except Exception as e:
             print(f"读取缓存文件失败: {e}")
 

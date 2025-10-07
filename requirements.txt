@@ -1,4 +1,3 @@
---index-url https://download.pytorch.org/whl/cu121
 
 langchain==0.3.0
 langchain-openai==0.2.11
@@ -26,7 +25,7 @@ scipy==1.10.1
 seaborn==0.13.2
 tushare==1.4.21
 statsmodels==0.14.4
-torch==2.5.1+cu121
+torch==2.5.1
 scikit-learn>=1.0.0
 gym>=0.21.0
 stable-baselines3>=1.5.0
@@ -38,3 +37,5 @@ empyrical
 
 # https://zhuanlan.zhihu.com/p/30531652430
 ta-lib
+
+python-dotenv

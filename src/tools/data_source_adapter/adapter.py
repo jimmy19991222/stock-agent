@@ -119,14 +119,14 @@ class DataSourceAdapter:
         df = pd.DataFrame()
         
         # 首先尝试使用AKShare
-        try:
-            df = get_akshare_price_data(akshare_code, start_date, end_date, adjust)
-            if not df.empty:
-                return df
-        except Exception as e:
-            logger.warning(f"AKShare data fetch failed: {str(e)}")
-            logger.debug(f"AKShare error details: {traceback.format_exc()}")
-            logger.info("Falling back to TuShare...")
+        # try:
+        #     df = get_akshare_price_data(akshare_code, start_date, end_date, adjust)
+        #     if not df.empty:
+        #         return df
+        # except Exception as e:
+        #     logger.warning(f"AKShare data fetch failed: {str(e)}")
+        #     logger.debug(f"AKShare error details: {traceback.format_exc()}")
+        #     logger.info("Falling back to TuShare...")
         
         # 如果AKShare失败或不可用，尝试使用TuShare
         try:
@@ -178,13 +178,13 @@ class DataSourceAdapter:
         metrics = [{}]  # 默认返回一个空字典的列表
         
         # 首先尝试使用AKShare
-        try:
-            metrics = get_akshare_financial_metrics(akshare_code, exchange_prefix)
-            if metrics != [{}]:
-                return metrics
-        except Exception as e:
-            logger.warning(f"AKShare financial metrics fetch failed: {str(e)}")
-            logger.info("Falling back to TuShare...")
+        # try:
+        #     metrics = get_akshare_financial_metrics(akshare_code, exchange_prefix)
+        #     if metrics != [{}]:
+        #         return metrics
+        # except Exception as e:
+        #     logger.warning(f"AKShare financial metrics fetch failed: {str(e)}")
+        #     logger.info("Falling back to TuShare...")
         
         # 如果AKShare失败或不可用，尝试使用TuShare
         try:
@@ -247,13 +247,13 @@ class DataSourceAdapter:
         ]
         
         # 首先尝试使用AKShare
-        try:
-            statements = get_akshare_financial_statements(akshare_code, exchange_prefix)
-            if statements != default_items:
-                return statements
-        except Exception as e:
-            logger.warning(f"AKShare financial statements fetch failed: {str(e)}")
-            logger.info("Falling back to TuShare...")
+        # try:
+        #     statements = get_akshare_financial_statements(akshare_code, exchange_prefix)
+        #     if statements != default_items:
+        #         return statements
+        # except Exception as e:
+        #     logger.warning(f"AKShare financial statements fetch failed: {str(e)}")
+        #     logger.info("Falling back to TuShare...")
         
         # 如果AKShare失败或不可用，尝试使用TuShare
         try:
@@ -315,13 +315,13 @@ class DataSourceAdapter:
         }
         
         # 首先尝试使用AKShare
-        try:
-            market_data = get_akshare_market_data(akshare_code)
-            if market_data != default_data:
-                return market_data
-        except Exception as e:
-            logger.warning(f"AKShare market data fetch failed: {str(e)}")
-            logger.info("Falling back to TuShare...")
+        # try:
+        #     market_data = get_akshare_market_data(akshare_code)
+        #     if market_data != default_data:
+        #         return market_data
+        # except Exception as e:
+        #     logger.warning(f"AKShare market data fetch failed: {str(e)}")
+        #     logger.info("Falling back to TuShare...")
         
         # 如果AKShare失败或不可用，尝试使用TuShare
         try:
